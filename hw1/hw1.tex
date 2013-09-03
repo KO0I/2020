@@ -1,0 +1,132 @@
+\documentclass{hw}
+\usepackage{amssymb,listings,xcolor}
+\title{Homework 1}
+\course{ECEN 2020}
+\author{Patrick Harrington}
+\renewcommand\thesubsection{(\alph{subsection})}
+\lstset{ 
+  language=C,
+  basicstyle=\fontfamily{pcr}\selectfont\footnotesize\color{black},
+  keywordstyle=\color{black}\bfseries, % style for keywords
+  numberstyle=\tiny\color{gray},
+  rulecolor=\color{black},
+  numbers=left, numberstyle=\tiny, 
+  frame=single,
+  tabsize=2
+}
+\begin{document}
+\maketitle
+\section{Variable Types}
+\subsection{Size of integer on computer and Arduino}
+The size of integers on my computer (in bytes) is 4 bytes (found by using C's
+sizeof(int) function). On the Arduino, the integer size is smaller at 2 bytes.
+\subsection{What is a type cast? Why is it useful?}
+A type cast is an explicit re-definition of a data value's type. Type casting
+would allow, for instance, an integer to be converted into a double. The data
+itself remains unchanged, but the format the data represents changes. This has
+many uses in arithmetic operations. One example is truncating doubles or
+floats.
+\subsection{Simply explain what preprocessor directives are and what they can
+be used for}
+A preprocessor directive is used most often to include files or to set up
+global variables. In C, preprocessor directives are initiated with a
+``\texttt{\#}''
+symbol.
+\section{Explain the following section of code}
+\begin{lstlisting}
+int* x;
+int* y;
+x = malloc(sizeof(int));
+y = malloc(sizeof(int));
+*x = 1;
+*y = 2;
+x=y;
+printf(``%d, %d\n'', x ,y);
+free(x);
+free(y);
+\end{lstlisting}
+
+First, x and y are initialized as pointers to \texttt{ints}. In lines 3 and 4,
+x and y are reserving data that is exactly an integer's size in bytes. Running
+this code on my laptop would allocate 4 bytes off the heap. In lines 5 and 6,
+the pointers \texttt{x} and \texttt{y} are each assigned values in memory. In
+line 7, point \texttt{x} is then set to point to \texttt{y}. When the program
+is ran, two numbers are printed because of line 8's \texttt{printf} call. The
+numbers are equal, and represent the value that \texttt{y} points two
+with a memory address at 2. This can be seen from the output of
+\texttt{printf(``\%d, \%d\\n'', *x, *y);} if ran before and after the
+assignment at line 7.
+
+\section{Loops}
+\begin{lstlisting}
+void setup() {}
+void loop() { my_function();}
+void my_function()
+{
+  static int MyVar1 = 0;
+  int MyVar2 = 0;
+  MyVar1++;
+  MyVar2++;
+}
+\end{lstlisting}
+\subsection{What are the values of \texttt{MyVar1} and \texttt{MyVar2} at the end
+of \texttt{my\_function} for the first five calls to \texttt{my\_function}?}
+At the end of five calls to \texttt{my\_function}, the variable
+\texttt{MyVar1}=5, and \texttt{MyVar2}=0. If both variables are set to be
+\texttt{static}, they increment at the same time.
+\subsection{What would the values be if these variables were the same type, but
+global?}
+If both variables are global, that is, if they are set before \texttt{void
+setup()}, the output is quite different. Both \texttt{MyVar1} and
+\texttt{MyVar2} increment up at the same time. At the end, both variales are
+equal to 5.
+
+\section{Given the following variables}
+\begin{lstlisting}
+const boolean bPenguin  = true;
+const boolean bFrog     = false;
+const int iTurtle       = 0x19;
+const int iRabbit       = B00001111;
+const int iHampster     = 0;
+\end{lstlisting}
+\newpage
+\subsection{What would the result of the following statements be?}
+\begin{lstlisting}
+iTurtle   &   iRabbit;
+iTurtle   &&  iRabbit;
+bPenguin  &&  iRabbit;
+iHampster &   iTurtle;
+iTurtle   ||  iRabbit;
+iTurtle   |   iRabbit;
+iTurtle   |   bFrog;
+iHampster ||  bPenguin;
+\end{lstlisting}
+
+\section{Explain the result of the following code}
+
+\begin{lstlisting}
+union data {
+  unsigned char temp;
+  unsigned int  time;
+};
+int main(){
+  union data myData;
+  myData.time = 0xFCAB;
+  myData.temp = 0x0;
+
+  printf(``Address of myData.time: '');
+  printf(``%x\n'', (int)&myData.time);
+  printf(``Address of myData.temp: '');
+  printf(``%x\n'', (int)&myData.temp);
+  printf(``\n'');
+  printf(``Value of myData.time: '');
+  printf(``%x\n'', myData.time);
+  printf(``Value of myData.temp: '');
+  printf(``%x\n'', myData.temp);
+  return 0;
+}
+\end{lstlisting}
+
+Running the code on an Arduino gave the following output:
+\end{document}
+
