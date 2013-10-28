@@ -1,0 +1,98 @@
+\documentclass{hw}
+\usepackage{amssymb,listings,xcolor,graphicx}
+\title{Homework 2}
+\course{ECEN 2020}
+\author{Patrick Harrington}
+\renewcommand\thesubsection{(\alph{subsection})}
+\lstset{ 
+  language=C,
+  basicstyle=\fontfamily{pcr}\selectfont\footnotesize\color{black},
+  keywordstyle=\color{black}\bfseries, % style for keywords
+  numberstyle=\tiny\color{gray},
+  rulecolor=\color{black},
+  numbers=left, numberstyle=\tiny, 
+  frame=single,
+  tabsize=2
+}
+\begin{document}
+\maketitle
+
+\section{AVR Status Register (SREG)}
+  The AVR status register contains information about the state of the
+  microcontroller's processor - specificaly, the most recently executed arithmetic
+  instruction. The memory-mapped address of the SREG starts at
+  \texttt{0x3F}, and continues to \texttt{0x5f}. The default value is 
+0. Bit 1, also called Z, is the \textbf{Zero Flag}. It indicates ``false'' for
+arithmetic and logic operations, and is useful for branching conditional
+statements.
+
+\section{Checking AVR Status Register SREG}
+See attached files.
+
+The output was:
+
+\texttt{Bit 0 Status: On}
+
+\texttt{Bit 1 Status: On}
+
+\texttt{Bit 2 Status: On}
+
+\texttt{Bit 3 Status: On}
+
+\texttt{Bit 4 Status: On}
+
+\texttt{Bit 5 Status: On}
+
+\texttt{Bit 6 Status: Off}
+
+\texttt{Bit 7 Status: Off}
+
+%\lstinputlisting[language=C++]{file}
+
+\section{Low-Level Blink}
+See attached files
+\section{Lowest Frequency for Low-Level Blink}
+The slowest I could get the LED to blink was 14.4Hz. The pulse width was
+found to be about 37 ms. This was using unmodified code from problem 3; as I
+did not use nested \texttt{for} loops.
+\section{Memory Addresses, Variables and Definitions}
+\subsection{Memory Range}
+  If a variable is defined as \texttt{int Count\_Rotations=0}, it is likely
+  stored in the \texttt{0x0100 - 0x08F7} range, assuming a total of 2KBytes of
+  memory. This address range is the range of addresses that exist for the
+  Atmega SRAM, minus half of the width of an integer, which is 2 Bytes long.
+  \subsection{Array Definition}
+
+  There is a problem with the following array definition: 
+  
+  \texttt{volatile int
+    my\_array[2048]=\{0\};}, 
+
+    Namely, it is with the value it is initialized with; it matches the
+    size of all SRAM on the Atmega328! It would cause an immediate overflow.
+
+\subsection{Two Variables}
+Assuming that the first variable is at address \texttt{0x0120}:
+
+\texttt{double my\_number = 5;}
+
+\texttt{char my\_letter = 'b';}
+
+The size of a \texttt{double} is 4 Bytes, and the size of a \texttt{char} is
+only one Byte. As a result, the address of \texttt{b} is most likely
+\texttt{0x0140}.
+
+\section{Harvard vs. Von Neumann Architectures}
+The key difference between the Von Neumann and Harcard architectures is in the
+nature of the memory bus; with Von Neumann, the bus between program memory and
+data memory is shared, leading to a bottleneck as data and instructions
+have to be scheduled. The Harvard architecture has
+seperate buses for data and program memory, allowing data and instructions
+to be moving around at the same time. So while although the Von Neumann
+architecture is simpler, it performs poorly compared to the Harvard
+architecture. Another difference is in the use of caches. A Von Neumann
+processor would have a single cache storing everything, whereas a Harvard
+processor would need a cache for every bus to be efficient.
+
+\end{document}
+

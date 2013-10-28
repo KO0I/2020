@@ -1,0 +1,139 @@
+\documentclass{hw}
+\usepackage{amsmath,listings,xcolor,graphicx,circuitikz}
+\title{Homework 5}
+\course{ECEN 2020}
+\author{Patrick Harrington\\Maxim Allen}
+\renewcommand\thesubsection{(\alph{subsection})}
+\lstset{ 
+  language=C,
+  basicstyle=\fontfamily{pcr}\selectfont\footnotesize\color{black},
+  keywordstyle=\color{black}\bfseries, % style for keywords
+  numberstyle=\tiny\color{gray},
+  rulecolor=\color{black},
+  numbers=left, numberstyle=\tiny, 
+  frame=single,
+  tabsize=2
+}
+\begin{document}
+\maketitle
+\section{Analog-to-Digital Conversion Techniques}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+To convert an analog signal into something digital and readable, the
+microcontroller samples the signal at a rate that is at least twice
+the frequency of the signal. When deciding what values can be
+represented from the incomming data, we can use $2^n - 1$ bits where n
+decides the total number of different 'levels' we can represent. if
+we had 1 bit total, we can represent 2 different levels, on or off.
+when we have $n = 8$, we get 127 levels that we can represent from the
+digital signal. the more bits we assign the better. 
+Analog to digital conversion is a lot like approximating an integral
+in calculus, you can take a sample of what the data is at a given
+change in time and calculate the value at that point.
+
+\section{Voltage Division}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Using \texttt{analogRead()}, the voltage across a pair of resistors
+$R_1=22 [k \Omega]$ and $R_2 =270 [\Omega]$. From
+Equation~(\ref{eq:vdr}), we have calculated the expected voltage
+from the circuit shown in Figure~\ref{fig:vdr}.
+\begin{equation}
+  V_o = \frac{R_2}{R_1 + R_2} \cdot 5[V] = 60.6[mV]
+  \label{eq:vdr}
+\end{equation}
+We also tested again with two equal resistors found an expected drop
+of $2.5[V]$, since two resistors in parallel each drop half of the
+supplied voltage. We also noticed that the Arduino was less accurate
+with our original resistor values because the voltage dropped was so
+significant, that the tiny detected voltage was subject to considerable
+noise.
+\begin{figure}[ht!]
+  \centering
+  \begin{circuitikz}\draw
+    (0,4) node[anchor=east]{$5 [V]$}
+    to[R,l=$R_1$,o-*](3,4)
+    to[R,l=$R_2$,*-](3,1)node[ground]{}
+    (3,4)to[short,*-o](6,4) node[anchor=west]{$V_o$}
+    ;\end{circuitikz}
+  \caption{Voltage Divider Circuit}
+  \label{fig:vdr}
+\end{figure}
+
+The code used to measure this quantity is attached below:
+
+\lstinputlisting[language=C]{./harrington_allen_HW5/analogread.ino}
+
+\section{Advantages of Working at the Register Level}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+This question asked about manipulating ports on a register level
+rather than writing their states with functions. This is beneficial
+because libraries can take up a lot of memory space. especially when
+you call them multiple times. the following code snippet calls digital write
+4 times:
+\begin{lstlisting}
+  digitalWrite(0, HIGH);
+  digitalWrite(1, HIGH);
+  digitalWrite(2, HIGH);
+  digitalWrite(3, HIGH);
+\end{lstlisting}
+
+This takes up a lot more memory and processing power than \texttt{PORTA |=
+0x0F;} this method requires no extra space for libraries and is
+very minimalistic in it processing requirements.
+
+\section{Time Elapsed since Program Execution}
+
+As directed, the following code includes use of the serial monitor
+and the Arduino libraries.
+
+\lstinputlisting[language=C]{./harrington_allen_HW5/runtime.ino}
+
+\section{Double Blink}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Functional code was developed, but this depended upon the libraries.
+Also included in the homework submission is a copy of an attempt to
+use ISRs to generate seperate clock signals, but one of the timers
+(\texttt{TCCR2A}) was problematic because it was an 8-bit timer.
+
+\lstinputlisting[language=C]{./harrington_allen_HW5/DoubleBlink.ino}
+\section{Signal Processing}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{}The period of this wave is $T=6 ms$, so it is oscillating
+at $f\approx 166 [Hz]$. thus, we need to sample it at at least 332 hz to get a
+good reading.
+
+\subsection{} If you only checked this signal once per second, you
+are skipping 165 cycles of possible data change. The resultant
+sampled signal would be unrecognizable!
+
+\subsection{} Aliasing in signal processing is when an analog signal
+is converted to digital and reconstructed using the digital values.
+during this reconstruction, data points are rounded off or grouped
+together making the reconstructed signal rough in comparison to what
+the actual signal is. Aliasing also happens when the signal isnt
+sampled fast enough so some data points are completely neglected. An
+aliased signal may appear completely different than the actual
+signal being sampled.
+
+\subsection{}Using the same logic from Equation~(\ref{eq:vdr}),
+$10[k\Omega]$ is the required $R_2$ value. When voltage dividing
+into half the voltage you have, both resistors must be equal.
+
+\subsection{}Protecting the arduino from high voltages involves a
+voltage divider. Protecting the arduino from large currents is a
+little bit tougher, but can be done with just a current divider. The
+equation for current division is shown in Equation~(\ref{eq:cdr}).
+
+\begin{equation}
+  I_o = \frac{G_x}{G_{total}}\cdot I_t
+  \label{eq:cdr}
+\end{equation}
+
+Where $G_x=\frac{1}{R_x}$ and $G_{total}$ for $n$ resistors is
+defined as:
+
+\begin{align*}
+  G_{total} = \sum_1^n \frac{1}{R_i}
+\end{align*}
+
+\end{document}

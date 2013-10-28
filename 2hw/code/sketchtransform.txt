@@ -1,0 +1,32 @@
+////Written for ECEN 2020 Fall 2010
+//University of Colorado Boulder
+//R. Pomeroy robert.pomeroy@colorado.edu
+
+//The 'theoretical' result of the transform step from the Arduino IDE
+
+#include "WProgram.h"
+
+void setup();
+
+void loop();
+
+void setup() {
+	Serial.begin(9600);
+}
+
+void loop() {
+	Serial.println("AM I BEING ANNOYING?");
+	delay(1000);
+}
+
+int main(void)
+{
+	init();
+
+	setup();
+
+	for(;;)
+		loop();
+
+	return 0;
+}

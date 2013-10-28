@@ -1,0 +1,55 @@
+//Written for ECEN 2020 Fall 2010
+//University of Colorado Boulder
+//R. Pomeroy robert.pomeroy@colorado.edu
+
+//Program:
+//Developed with the Arduino Uno Board and Arduino IDE
+//Reads the AVR status register of the ATmega328P microcontroller
+//Outputs the various bit statuses to the serial monitor
+
+char message[] = "Bit X is xxx";
+
+void setup()   {                
+  Serial.begin(9600);
+}
+
+
+void loop()                    
+{  
+  int i;
+  unsigned int SREG_status = SREG;
+  
+  Serial.println(SREG_status,HEX);
+  Serial.println(SREG_status,BIN);
+  
+  for(i=0;i<8;i++)
+  {
+     if((SREG_status & 0x01) == 1)
+     {
+         sprintf(message,"Bit %01i is on", i);
+     }
+     else
+     {
+         sprintf(message,"Bit %01i is off", i);
+     }
+     
+     SREG_status = SREG_status >> 1;
+     Serial.println(message);
+  }
+  
+  for(;;);
+  
+}
+
+/*Results in this for me:
+94
+10010100
+Bit 0 is off
+Bit 1 is off
+Bit 2 is on
+Bit 3 is off
+Bit 4 is on
+Bit 5 is off
+Bit 6 is off
+Bit 7 is on
+*/

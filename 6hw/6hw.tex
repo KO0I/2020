@@ -1,0 +1,43 @@
+\documentclass{hw}
+\usepackage{amsmath,listings,xcolor,graphicx,circuitikz}
+\title{Homework 6}
+\course{ECEN 2020}
+\author{Patrick Harrington\\Maxim Allen}
+%  Set subsections to be in the form of a,b,c...
+\renewcommand\thesubsection{(\alph{subsection})}
+%  Style of listings
+\lstset{ 
+  language=C,
+  basicstyle=\fontfamily{pcr}\selectfont\footnotesize\color{black},
+  keywordstyle=\color{black}\bfseries, % style for keywords
+  numberstyle=\tiny\color{gray},
+  rulecolor=\color{black},
+  numbers=left, numberstyle=\tiny, 
+  frame=single,
+  tabsize=2
+}
+%  \lstinputlisting[language=C]{./hwdir/code.ino}
+\begin{document}
+\maketitle
+
+\section{Serial Communication}
+
+\subsection{Echo Program}
+
+
+  \lstinputlisting[language=C]{./harrington_allen_HW6/echo.ino}
+
+\subsection{Changing Baud rate to $115200$}
+
+By manipulating \texttt{UBRR0H} and \texttt{UBRR0L}, the Baud rate
+can be set to $115200$. Specifically, this can be done by setting \texttt{UBRR0H} to 0 and
+\texttt{UBRR0L} to 16 as listed in the Data sheet. (Note that in
+your favorite serial monitor, the Baud rate must be adjusted, too).
+
+\section{Playing Music}
+Yes; I got this working.
+\section{Communicating with the MP3 Board}
+
+  \lstinputlisting[language=C]{./harrington_allen_HW6/spi_register.ino}
+
+\end{document}
